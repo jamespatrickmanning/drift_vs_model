@@ -7,7 +7,7 @@ and the way we get the model data can choose from('GOM3','massbay','ROMS').
 we can choose add wind or not but if we use drogues drifter we don't need wind
 compare drifter and model track get 2 figure(drifter and model track .distance and time)
 get one file (distance/day and distance/km)
-
+JiM made a suggestion
 @author: Qianran
 """
 import datetime as dt
