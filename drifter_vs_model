@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Oct 13 11:38:36 2015
-before run this code if you have drifter ID you should know the start_time and depth
-the way we get the drifter data can choose from('raw''csv','erddap' or drifter list)
-and the way we get the model data can choose from('GOM3','massbay','ROMS').
-we can choose add wind or not but if we use drogues drifter we don't need wind
-compare drifter and model track get 2 figure(drifter and model track .distance and time)
-get one file (distance/day and distance/km)
-JiM made a suggestion
-@author: Qianran
+Created on Tue Oct 13 11:38:36 2015 by JiM
+with subsequent modifications by several students:
+Conner Warren, Tim Anderson, Nkosi Muse, Qianran Zhang, and Xiaojian Liu  
+To run this code you need to have drifter ID and start_time (or a list of units in your "drift_list" file) 
+You can choose to get drifter data can choose from ('raw''csv','erddap' or drifter list)
+You can choose to get the model data from('GOM3','massbay','ROMS').
+You can choose add wind correction factor (or wind=0) where to get the wind ('FVCOM' or 'NCEP')
+The output is two figures (drifter/model track  amd separation distance vs time)
+and one file with tabulated separation distance/day and separations distance/km
 """
 import datetime as dt
 import pandas as pd
@@ -24,17 +24,18 @@ Model=['GOM3']#'GOM3','massbay','30yr','ROMS'# model want to be compair with dri
 drifter_ID = ['116410702']#if drifter_ID=[],get drifter id from list  
 drifter_list='erddap_drifter_list_both.csv'#get from get_drifter_list code
 depth =[-1]
-track=20#how many drifter track you want compare
-days=2# for one drifter how many days want to compare #if use 'raw' max days is 3#how many drifter have how many data 
-track_days=1#each time how many days want to compair
-restart_days=1#the day you want to restart compair
+track=20 #how many drifter tracks you want compare
+days=2 #for each drifter, this is how many days want to compare at one time 
+track_days=1 #each time how many days want to compair
+restart_days=1 #the day you want to restart compair
 start_times =[dt.datetime(2011,6,1,19,57,0,0)]#if have drifter_ID it will be use how many drifter have how many data 
 #data_type='raw'#'hourly' 'rmtide'
 wind_get_type='FVCOM'#'NCEP'
 wind=0.05#if you don't want have wind correct,wind =0
-######## Drifter and model track ##########
+
+######## Define the drifter_list depending on the model ##########
 print "get drifter data from "+ drifter_data_type+" use %s model compare %i days" %(Model,days-1)
-#the file we get from the program erddap_gtedrifter_list 
+#the file we get from the program erddap_getdrifter_list 
 if drifter_list==[]:
     if 'ROMS' in Model and '30yr' in Model:
         drifter_list='erddap_drifter_list_both.csv'
@@ -44,6 +45,7 @@ if drifter_list==[]:
         drifter_list='erddap_drifter_list_30yr.csv'
 file_drID=[];
 
+####### Initialize some variables #########################
 if 'ROMS' in Model:
     romstmeandis=[];romstmindis=[];romstmaxdis=[];romsdmeandis=[];romsdmindis=[];romsdmaxdis=[]
 if '30yr' in Model:
@@ -52,7 +54,8 @@ if 'GOM3' in Model:
     gomtmeandis=[];gomtmindis=[];gomtmaxdis=[];gomdmeandis=[];gomdmindis=[];gomdmaxdis=[]
 if 'massbay' in Model:
     masstmeandis=[];masstmindis=[];masstmaxdis=[];massdmeandis=[];massdmindis=[];massdmaxdis=[];
-#####get drifter information from file or hard code
+
+#####get drifter information into a dictionary from file or hard code
 if drifter_ID==[]:#get drifter information from file
     # read in the drifter IDs and their mean,min, max sample intervals    
     start_times=[]    
@@ -60,15 +63,12 @@ if drifter_ID==[]:#get drifter information from file
     for i in range(len(drifters['ids'])):
         dt_time=datetime.strptime(drifters['start_time'][i], '%Y-%m-%d'+' '+'%H:%M:%S+00:00')       
         start_times.append(dt_time)
-    
-
 else:
     drifters=dict(ids=[],days=[])
     drifters['ids']=drifter_ID
     drifters['depth']=depth
     for b in range(len(drifter_ID)):
         drifters['days'].append(days)  
-        
 
 #######get drifter track
 for num in range(min(len(drifters['ids']),track)): # we limit runs to "track" drifters (typically 20) because it often bombs   
