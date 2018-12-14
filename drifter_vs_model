@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Oct 13 11:38:36 2015 by JiM
-with subsequent modifications by several students:
+Basically compares observed drifter tracks with model-derived particle tracks
+JiM began the code with subsequent modifications by several students:
 Conner Warren, Tim Anderson, Nkosi Muse, Qianran Zhang, and Xiaojian Liu  
 To run this code you need to have drifter ID and start_time (or a list of units in your "drift_list" file) 
-You can choose to get drifter data can choose from ('raw''csv','erddap' or drifter list)
+You can choose to get drifter data format from ('raw''csv','erddap' or drifter list)
 You can choose to get the model data from('GOM3','massbay','ROMS').
 You can choose add wind correction factor (or wind=0) where to get the wind ('FVCOM' or 'NCEP')
 The output is two figures (drifter/model track  amd separation distance vs time)
